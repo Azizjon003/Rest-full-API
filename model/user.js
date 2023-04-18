@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const bcrypt = require("bcryptjs");
 const userSchema = new mongoose.Schema(
   {
     name: {
@@ -15,6 +16,7 @@ const userSchema = new mongoose.Schema(
       type: String,
       tolowercase: true,
       required: true,
+      unique: true,
     },
     photo: {
       type: String,
@@ -33,6 +35,10 @@ const userSchema = new mongoose.Schema(
       enum: ["admin", "user"],
       default: "user",
     },
+    jins: {
+      type: String,
+      enum: ["erkak", "ayol"],
+    },
     active: {
       type: Boolean,
       default: true,
@@ -42,6 +48,21 @@ const userSchema = new mongoose.Schema(
     timestamps: true,
   }
 );
+userSchema.pre("updateOne", async function (next) {
+  if (!this._update?.password) return next();
+  const hashPass = await bcrypt.hash(this._update.password, 12);
+  this._update.password = hashPass;
+  this._update.passwordConfirm = undefined;
+  this._update.passwordChangedAt = Date.now();
+});
+
+userSchema.pre("save", async function (next) {
+  if (!this.isModified("password")) return next();
+
+  const hashPass = await bcrypt.hash(this.password, 12);
+  this.password = hashPass;
+  this.passwordConfirm = undefined;
+});
 
 const User = mongoose.model("User", userSchema);
 
