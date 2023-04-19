@@ -3,11 +3,6 @@ const AppError = require("../utility/AppError");
 const catchAsync = require("../utility/catchAsync");
 const { promisify } = require("util");
 const jwt = require("jsonwebtoken");
-const {
-  singUpJoi,
-  loginJoi,
-  updatePasswordJoi,
-} = require("../validation/validator");
 
 const OptionSort = function (options, permission) {
   const option = {};
@@ -20,17 +15,8 @@ const OptionSort = function (options, permission) {
 };
 const signUp = catchAsync(async (req, res, next) => {
   //sirtqi qo'shish kk
-  // console.log(req.body);
 
-  const { error, value } = singUpJoi(req.body);
-  console.log(error);
-  if (error) {
-    return next(new AppError(error.details[0].message, 400));
-  }
-  console.log(value);
-  const user = await User.create(value);
-
-  console.log(user);
+  const user = await User.create(req.body);
 
   const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
     expiresIn: process.env.JWT_EXPIRES_IN,
@@ -42,15 +28,7 @@ const signUp = catchAsync(async (req, res, next) => {
   });
 });
 const login = catchAsync(async (req, res, next) => {
-  console.log(req.body);
-
-  const { error, value } = loginJoi(req.body);
-  console.log(error);
-  if (error) {
-    return next(new AppError(error.details[0].message, 400));
-  }
-
-  const { email, password } = value;
+  const { email, password } = req.body;
   const user = await User.findOne({ email }).select("+password");
 
   console.log(user);
@@ -74,11 +52,7 @@ const login = catchAsync(async (req, res, next) => {
   });
 });
 const updatePassword = catchAsync(async (req, res, next) => {
-  const { error, value } = updatePasswordJoi(req.body);
-  if (error) {
-    return next(new AppError(error.details[0].message, 400));
-  }
-  const { password, passwordConfirm, passwordCurrent } = value;
+  const { password, passwordConfirm, passwordCurrent } = req.body;
   const user = await User.findById(req.user.id).select("+password");
 
   if (!(await user.correctPassword(passwordCurrent, user.password))) {

@@ -1,6 +1,6 @@
 const User = require("../model/user");
 const AppError = require("../utility/AppError");
-const { userCreateJoi } = require("../validation/validator");
+
 const catchAsync = require("../utility/catchAsync");
 
 function generatePassword(length) {
@@ -48,11 +48,7 @@ exports.getUser = catchAsync(async (req, res, next) => {
 });
 
 exports.addUser = catchAsync(async (req, res, next) => {
-  const { error, value } = userCreateJoi.validate(req.body);
-  if (error) {
-    return next(new AppError(error.details[0].message, 400));
-  }
-  const { name, surname, email, jins } = value;
+  const { name, surname, email, jins } = req.body;
   const password = generatePassword(8);
   const user = await User.create({
     name,
