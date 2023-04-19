@@ -3,6 +3,11 @@ const AppError = require("../utility/AppError");
 const catchAsync = require("../utility/catchAsync");
 const { promisify } = require("util");
 const jwt = require("jsonwebtoken");
+const {
+  singUpJoi,
+  loginJoi,
+  updatePasswordJoi,
+} = require("../validation/validator");
 
 const OptionSort = function (options, permission) {
   const option = {};
@@ -16,15 +21,14 @@ const OptionSort = function (options, permission) {
 const signUp = catchAsync(async (req, res, next) => {
   //sirtqi qo'shish kk
   // console.log(req.body);
-  const { name, surname, email, password, passwordConfirm } = req.body;
 
-  const user = await User.create({
-    name,
-    surname,
-    email,
-    password,
-    passwordConfirm,
-  });
+  const { error, value } = singUpJoi(req.body);
+  console.log(error);
+  if (error) {
+    return next(new AppError(error.details[0].message, 400));
+  }
+  console.log(value);
+  const user = await User.create(value);
 
   console.log(user);
 
@@ -39,11 +43,14 @@ const signUp = catchAsync(async (req, res, next) => {
 });
 const login = catchAsync(async (req, res, next) => {
   console.log(req.body);
-  const { email, password } = req.body;
-  if (!email || !password) {
-    return next(new AppError("Please provide email and password", 400));
+
+  const { error, value } = loginJoi(req.body);
+  console.log(error);
+  if (error) {
+    return next(new AppError(error.details[0].message, 400));
   }
 
+  const { email, password } = value;
   const user = await User.findOne({ email }).select("+password");
 
   console.log(user);
@@ -67,9 +74,11 @@ const login = catchAsync(async (req, res, next) => {
   });
 });
 const updatePassword = catchAsync(async (req, res, next) => {
-  const { password, passwordConfirm, passwordCurrent } = req.body;
-
-  console.log(req.body);
+  const { error, value } = updatePasswordJoi(req.body);
+  if (error) {
+    return next(new AppError(error.details[0].message, 400));
+  }
+  const { password, passwordConfirm, passwordCurrent } = value;
   const user = await User.findById(req.user.id).select("+password");
 
   if (!(await user.correctPassword(passwordCurrent, user.password))) {
