@@ -69,6 +69,7 @@ const login = catchAsync(async (req, res, next) => {
 const updatePassword = catchAsync(async (req, res, next) => {
   const { password, passwordConfirm, passwordCurrent } = req.body;
 
+  console.log(req.body);
   const user = await User.findById(req.user.id).select("+password");
 
   if (!(await user.correctPassword(passwordCurrent, user.password))) {
@@ -134,10 +135,10 @@ const protect = catchAsync(async (req, res, next) => {
 });
 const updateMe = catchAsync(async (req, res, next) => {
   const id = req.user._id;
-  const optionPermission = ["name", "lastname"];
+  const optionPermission = ["name", "surname"];
   let option = {};
   option.name = req.body.name || req.user.name;
-  option.lastname = req.body.lastname || req.user.lastname;
+  option.surname = req.body.surname || req.user.surname;
 
   const options = OptionSort(option, optionPermission);
 
