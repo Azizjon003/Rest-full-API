@@ -11,7 +11,7 @@ module.exports = (err, req, res, next) => {
         infoError: err.stack,
       });
     } else {
-      res.status(err.statusCode).render("error", {
+      res.status(err.statusCode || 400).json({
         message: err.message,
       });
     }

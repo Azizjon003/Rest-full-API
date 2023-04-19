@@ -7,6 +7,7 @@ const {
   updateUser,
 } = require("../controller/userController");
 const { validate } = require("../controller/validationUser");
+
 const {
   singUpJoi,
   loginJoi,
