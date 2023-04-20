@@ -6,7 +6,7 @@ const { jwtToken } = require("../../controller/authController");
 const User = require("../../model/user");
 
 let token;
-let userid;
+let userId;
 describe("api/users", () => {
   beforeEach(async () => {
     server = require("../../server");
@@ -158,6 +158,6 @@ describe("api/users", () => {
     it("should return 200 if id and body true", async () => {
       const response = await execute(userId);
       expect(response.status).toBe(204);
-    })
+    });
   });
 });
