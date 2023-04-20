@@ -1,53 +1,54 @@
 const request = require("supertest");
 let server;
-const { jwtToken } = require("../../../controller/authController");
+const { jwtToken } = require("../../controller/authController");
 const Product = require("../../model/product");
 const User = require("../../model/user");
 
 describe("/api/products", () => {
-  beforeEach(() => {
+  beforeEach(async () => {
     server = require("../../server");
+    await Product.collection.insertMany([
+      {
+        name: "product1",
+        price: 10,
+        description: "product1 description",
+        category: "category1",
+        image: "image1",
+        salePrice: 5,
+        description: "product1 description",
+        expire: "2021-01-01",
+      },
+      {
+        name: "product2",
+        price: 10,
+        description: "product2 description",
+        category: "category2",
+        image: "image2",
+        salePrice: 5,
+        description: "product2 description",
+        expire: "2021-01-01",
+      },
+      {
+        name: "product3",
+        price: 10,
+        description: "product3 description",
+        category: "category3",
+        image: "image3",
+        salePrice: 5,
+        description: "product3 description",
+        expire: "2021-01-01",
+      },
+    ]);
   });
   afterEach(async () => {
     server.close();
     await Product.deleteMany({});
+    await User.deleteMany({});
   });
   describe("GET /", () => {
     it("should return all products", async () => {
-      await Product.collection.insertMany([
-        {
-          name: "product1",
-          price: 10,
-          description: "product1 description",
-          category: "category1",
-          image: "image1",
-          salePrice: 5,
-          description: "product1 description",
-          expire: "2021-01-01",
-        },
-        {
-          name: "product2",
-          price: 10,
-          description: "product2 description",
-          category: "category2",
-          image: "image2",
-          salePrice: 5,
-          description: "product2 description",
-          expire: "2021-01-01",
-        },
-        {
-          name: "product3",
-          price: 10,
-          description: "product3 description",
-          category: "category3",
-          image: "image3",
-          salePrice: 5,
-          description: "product3 description",
-          expire: "2021-01-01",
-        },
-      ]);
       const res = await request(server).get("/api/v1/products");
-      console.log(res.body);
+      // console.log(res.body);
       expect(res.status).toBe(200);
       expect(res.body.data.products.length).toBe(3);
       expect(
@@ -85,11 +86,10 @@ describe("/api/products", () => {
     let data = {
       name: "product3",
       price: 10,
-      description: "product3 description",
+      salePrice: 5,
+      description: "product3 description jfksjfnsdnfsndf sdkfnsdkj",
       category: "category3",
       image: "image3",
-      salePrice: 5,
-      description: "product3 description",
       expire: "2021-01-01",
     };
 
@@ -97,7 +97,7 @@ describe("/api/products", () => {
       const user = await User.create({
         name: "AdminA",
         surname: "TestUser",
-        email: "admin@gmail.com",
+        email: "adminjon@gmail.com",
         password: "Admin.1234",
         jins: "erkak",
         role: "admin",
@@ -106,11 +106,25 @@ describe("/api/products", () => {
     });
     const execute = async () => {
       let bearerToken = "Bearer " + token;
+
       return await request(server)
         .post("/api/v1/products")
         .set("Authorization", bearerToken)
         .send(data);
     };
-    it("should return create products", async () => {});
+    it("should return create products", async () => {
+      token = "";
+      const res = await execute();
+      expect(res.status).toBe(401);
+    });
+    it("should return 400 if product created", async () => {
+      const res = await execute();
+      expect(res.status).toBe(201);
+    });
+    it("should return 400 if product name is less than 5 characters", async () => {
+      const res = await execute();
+      expect(res.status).toBe(201);
+      expect(res.body.data).toHaveProperty("name", data.name);
+    });
   });
 });

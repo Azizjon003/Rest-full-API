@@ -24,11 +24,9 @@ const jwtToken = (id, admin) => {
   return token;
 };
 const signUp = catchAsync(async (req, res, next) => {
-  //sirtqi qo'shish kk
-
   const user = await User.create(req.body);
 
-  const token = jwtTOken(user._id, user.role);
+  const token = jwtToken(user._id, user.role);
 
   res.status(201).json({
     status: "success",
@@ -82,7 +80,6 @@ const updatePassword = catchAsync(async (req, res, next) => {
   });
 });
 const protect = catchAsync(async (req, res, next) => {
-  //1 tokenni tekshirish
   let token;
 
   if (
@@ -96,12 +93,12 @@ const protect = catchAsync(async (req, res, next) => {
     }
   }
 
-  console.log(req.headers.authorization);
-
-  console.log(token);
+  if (!token) {
+    return next(new AppError("Please log in", 401));
+  }
   // tokenni tekshirish kerak
   const id = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
-  console.log(id);
+
   if (!id) {
     return next(new AppError("Please log in", 401));
   }
