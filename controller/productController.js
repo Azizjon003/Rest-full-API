@@ -1,10 +1,14 @@
 const AppError = require("../utility/AppError");
 const Product = require("../model/product");
 const catchAsync = require("../utility/catchAsync");
+const mongoose = require("mongoose");
 const { promisify } = require("util");
 
 exports.getAllProducts = catchAsync(async (req, res, next) => {
   const products = await Product.find();
+  if (!products[0]) {
+    return next(new AppError("No data found", 404));
+  }
   res.status(200).json({
     status: "success",
     results: products.length,
@@ -16,9 +20,10 @@ exports.getAllProducts = catchAsync(async (req, res, next) => {
 
 exports.getProduct = catchAsync(async (req, res, next) => {
   const id = req.params.id;
-  if (!id) {
-    return next(new AppError("Please provide id", 400));
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    return next(new AppError("Invalid Id", 400));
   }
+
   const data = await Product.findById(id);
   if (!data) {
     return next(new AppError("No data found", 404));

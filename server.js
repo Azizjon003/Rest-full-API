@@ -8,6 +8,8 @@ let dbUrl = process.env.DB;
 const dbPass = process.env.DB_PASS;
 dbUrl = dbUrl.replace("<password>", dbPass);
 connection(dbUrl);
-app.listen(port, () => {
+let server = app.listen(port, () => {
   console.log(`Server is listening on port ${port}`);
 });
+
+module.exports = server;
