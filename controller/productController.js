@@ -3,17 +3,25 @@ const Product = require("../model/product");
 const catchAsync = require("../utility/catchAsync");
 const mongoose = require("mongoose");
 const { promisify } = require("util");
+const FeatureApi = require("../utility/featureAPi");
 
 exports.getAllProducts = catchAsync(async (req, res, next) => {
-  const products = await Product.find();
-  if (!products[0]) {
+  let data = new FeatureApi(req.query, Product)
+    .filter()
+    .sort()
+    .field()
+    .pagenation();
+  console.log(data);
+  data = await data.databaseQuery;
+  console.log(req.query);
+  if (!data[0]) {
     return next(new AppError("No data found", 404));
   }
   res.status(200).json({
     status: "success",
-    results: products.length,
+    results: data.length,
     data: {
-      products,
+      data,
     },
   });
 });
