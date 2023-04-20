@@ -13,14 +13,22 @@ const OptionSort = function (options, permission) {
 
   return option;
 };
+const jwtToken = (id, admin) => {
+  let token = jwt.sign(
+    { id: id, isAdmin: admin == "admin" ? true : false },
+    process.env.JWT_SECRET,
+    {
+      expiresIn: process.env.JWT_EXPIRES_IN,
+    }
+  );
+  return token;
+};
 const signUp = catchAsync(async (req, res, next) => {
   //sirtqi qo'shish kk
 
   const user = await User.create(req.body);
 
-  const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
-    expiresIn: process.env.JWT_EXPIRES_IN,
-  });
+  const token = jwtTOken(user._id, user.role);
 
   res.status(201).json({
     status: "success",
@@ -41,10 +49,7 @@ const login = catchAsync(async (req, res, next) => {
     return next(new AppError("Incorrect email or password", 401));
   }
 
-  const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
-    expiresIn: process.env.JWT_EXPIRES_IN,
-  });
-
+  const token = jwtToken(user._id, user.role);
   res.status(200).json({
     status: "success",
     token,
@@ -69,9 +74,7 @@ const updatePassword = catchAsync(async (req, res, next) => {
   } catch (err) {
     next(new AppError(err.message, 400));
   }
-  const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
-    expiresIn: process.env.JWT_EXPIRES_IN,
-  });
+  const token = jwtToken(user._id, user.role);
 
   res.status(200).json({
     status: "success",
@@ -227,4 +230,5 @@ module.exports = {
   updateMe,
   deleteUser,
   me,
+  jwtToken,
 };
