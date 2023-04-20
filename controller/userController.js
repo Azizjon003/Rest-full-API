@@ -1,6 +1,7 @@
 const User = require("../model/user");
 const AppError = require("../utility/AppError");
 
+const mongoose = require("mongoose");
 const catchAsync = require("../utility/catchAsync");
 
 function generatePassword(length) {
@@ -30,15 +31,15 @@ exports.getAllUsers = catchAsync(async (req, res, next) => {
 
 exports.getUser = catchAsync(async (req, res, next) => {
   const id = req.params.id;
-  if (!id) {
-    return next(new AppError("Please provide an id", 400));
+  console.log(id);
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    return next(new AppError("Invalid Id", 400));
   }
 
   const user = await User.findOne({
     _id: id,
-    active: true,
   });
-  if (!User) {
+  if (!user) {
     return next(new AppError("No user found", 404));
   }
   res.status(200).json({
@@ -56,6 +57,7 @@ exports.addUser = catchAsync(async (req, res, next) => {
     email,
     password,
     passwordConfirm: password,
+    jins,
   });
   if (!user) {
     return next(new AppError("User don't created"));
@@ -70,9 +72,10 @@ exports.addUser = catchAsync(async (req, res, next) => {
 
 exports.deleteUser = catchAsync(async (req, res, next) => {
   const id = req.params.id;
-  if (!id) {
-    return next(new AppError("id not found", 404));
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    return next(new AppError("Invalid Id", 400));
   }
+
   const data = await User.findByIdAndDelete(id);
 
   res.status(200).json({

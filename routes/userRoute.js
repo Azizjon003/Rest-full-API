@@ -7,7 +7,7 @@ const {
   updateUser,
 } = require("../controller/userController");
 const { validate } = require("../controller/validationUser");
-
+const authController = require("../controller/authController");
 const {
   singUpJoi,
   loginJoi,
@@ -15,7 +15,14 @@ const {
   userCreateJoi,
 } = require("../validation/user");
 
-router.route("/").get(getAllUsers).post(validate(userCreateJoi), addUser);
-router.route("/:id").get(getUser).delete(deleteUser).patch(updateUser);
+router
+  .route("/")
+  .get(authController.protect, authController.role("admin"), getAllUsers)
+  .post(validate(userCreateJoi), addUser);
+router
+  .route("/:id")
+  .get(authController.protect, authController.role("admin"), getUser)
+  .delete(deleteUser)
+  .patch(authController.protect, authController.role("admin"), updateUser);
 
 module.exports = router;

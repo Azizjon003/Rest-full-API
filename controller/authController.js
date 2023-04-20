@@ -88,17 +88,23 @@ const protect = catchAsync(async (req, res, next) => {
   ) {
     token = req.headers.authorization.split(" ")[1];
   } else {
-    if (req.cookies.jwt) {
-      token = req.cookies.jwt;
+    if (req.cookies?.jwt) {
+      token = req.cookies?.jwt;
+    } else {
+      return next(new AppError("Jwt not found", 401));
     }
   }
 
   if (!token) {
     return next(new AppError("Please log in", 401));
   }
+  let id;
   // tokenni tekshirish kerak
-  const id = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
-
+  try {
+    id = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
+  } catch (error) {
+    return next(new AppError(error.message, 401));
+  }
   if (!id) {
     return next(new AppError("Please log in", 401));
   }
