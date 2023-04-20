@@ -121,5 +121,43 @@ describe("api/users", () => {
       const response = await execute(userid, { name: "Azizjon" });
       expect(response.status).toBe(401);
     });
+    it("should return 400 if invalid id passed", async () => {
+      const response = await execute("salom", { name: "Azizjon" });
+      expect(response.status).toBe(400);
+    });
+    it("should return 200 if id and body true", async () => {
+      let data = {
+        name: "Bahrom",
+        surname: "Bahromov",
+      };
+      const response = await execute(userId, data);
+      expect(response.status).toBe(200);
+      expect(response.body.data).toHaveProperty("name");
+      expect(response.body.data.name).toBe("Bahrom");
+      expect(response.body.data.surname).toBe("Bahromov");
+    });
+  });
+  describe("DELETE /:id", () => {
+    const execute = async (id) => {
+      let bearerToken = "Bearer " + token;
+
+      return await request(server)
+        .delete("/api/v1/users/" + id)
+        .set("Authorization", bearerToken);
+    };
+    it("should return 401 error if User jwt not found", async () => {
+      token = "";
+      const response = await execute(userid);
+      expect(response.status).toBe(401);
+    });
+
+    it("should return 400 if invalid id passed", async () => {
+      const response = await execute("salom");
+      expect(response.status).toBe(400);
+    });
+    it("should return 200 if id and body true", async () => {
+      const response = await execute(userId);
+      expect(response.status).toBe(204);
+    })
   });
 });
