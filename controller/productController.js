@@ -4,6 +4,12 @@ const catchAsync = require("../utility/catchAsync");
 const mongoose = require("mongoose");
 const { promisify } = require("util");
 const FeatureApi = require("../utility/featureAPi");
+const {
+  getProduct,
+  setProduct,
+  deleteProduct,
+  getAll,
+} = require("../redis/productRedis");
 
 exports.getAllProducts = catchAsync(async (req, res, next) => {
   let data = new FeatureApi(req.query, Product)
@@ -31,11 +37,18 @@ exports.getProduct = catchAsync(async (req, res, next) => {
   if (!mongoose.Types.ObjectId.isValid(id)) {
     return next(new AppError("Invalid Id", 400));
   }
+  let data = await getProduct(id);
+  let son = 1;
 
-  const data = await Product.findById(id);
+  son = data ? 1 : 0;
   if (!data) {
-    return next(new AppError("No data found", 404));
+    data = await Product.findById(id);
+    if (!data) {
+      return next(new AppError("No data found", 404));
+    }
+    setProduct(data);
   }
+  data = son == 1 ? JSON.parse(data) : data;
   res.status(200).json({
     status: "success",
     data,
@@ -43,6 +56,8 @@ exports.getProduct = catchAsync(async (req, res, next) => {
 });
 exports.createProduct = catchAsync(async (req, res, next) => {
   const data = await Product.create(req.body);
+  let product = await setProduct(data);
+  console.log(product);
   if (!data) {
     return next(new AppError("No data found", 404));
   }
@@ -53,7 +68,7 @@ exports.createProduct = catchAsync(async (req, res, next) => {
   });
 });
 exports.updateProduct = catchAsync(async (req, res, next) => {
-  const id = require.params.id;
+  const id = req.params.id;
   if (!id) {
     return next(new AppError("Please provide id", 400));
   }
@@ -64,6 +79,7 @@ exports.updateProduct = catchAsync(async (req, res, next) => {
   });
 
   const product = await Product.findOne({ _id: id });
+  await setProduct(product);
   if (!product) {
     return next(new AppError("No data found", 404));
   }
@@ -80,6 +96,7 @@ exports.deleteProduct = catchAsync(async (req, res, next) => {
   }
 
   const data = await Product.findByIdAndDelete(id);
+  let product = await deleteProduct(id);
   if (!data) {
     return next(new AppError("No data found", 404));
   }

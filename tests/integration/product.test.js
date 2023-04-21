@@ -50,9 +50,9 @@ describe("/api/products", () => {
       const res = await request(server).get("/api/v1/products");
       // console.log(res.body);
       expect(res.status).toBe(200);
-      expect(res.body.data.products.length).toBe(3);
+      expect(res.body.results).toBe(3);
       expect(
-        res.body.data.products.some((p) => p.name === "product1")
+        res.body.data.data.some((p) => p.name === "product1")
       ).toBeTruthy();
     });
   });
@@ -60,7 +60,7 @@ describe("/api/products", () => {
   describe("GET /:id", () => {
     it("should return a product if valid id is passed", async () => {
       const product = await Product.create({
-        name: " ",
+        name: "Salom",
         price: 10,
         description: "product1 description",
         category: "category1",

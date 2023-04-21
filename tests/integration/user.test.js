@@ -118,7 +118,7 @@ describe("api/users", () => {
 
     it("should return 401 error if User jwt not found", async () => {
       token = "";
-      const response = await execute(userid, { name: "Azizjon" });
+      const response = await execute(userId, { name: "Azizjon" });
       expect(response.status).toBe(401);
     });
     it("should return 400 if invalid id passed", async () => {
@@ -147,7 +147,7 @@ describe("api/users", () => {
     };
     it("should return 401 error if User jwt not found", async () => {
       token = "";
-      const response = await execute(userid);
+      const response = await execute(userId);
       expect(response.status).toBe(401);
     });
 

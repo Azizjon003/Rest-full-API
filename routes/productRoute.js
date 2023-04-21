@@ -14,6 +14,10 @@ router
   .route("/")
   .get(getAllProducts)
   .post(authController.protect, validate(productSchema), createProduct);
-router.route("/:id").get(getProduct).delete(deleteProduct).patch(updateProduct);
+router
+  .route("/:id")
+  .get(getProduct)
+  .delete(authController.protect, deleteProduct)
+  .patch(authController.protect, updateProduct);
 
 module.exports = router;

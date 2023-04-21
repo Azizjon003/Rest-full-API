@@ -10,7 +10,6 @@ const data = {
 
 const dataArray = [];
 
-// 20 ta JSON obyektlarini yasab, dataArray ichiga qo'shamiz
 for (let i = 0; i < 20; i++) {
   let newData = { ...data }; // Yangi obyekt yaratish uchun obyektni nusxalash
   newData.name += " " + (i + 1); // Har bir yangi obyektda nomni o'zgartirish
