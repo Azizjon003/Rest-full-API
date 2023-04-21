@@ -1,12 +1,13 @@
 const User = require("../model/user");
 const AppError = require("../utility/AppError");
 const catchAsync = require("../utility/catchAsync");
+const logegr = require("../utility/logger");
 const { promisify } = require("util");
 const jwt = require("jsonwebtoken");
 
 const OptionSort = function (options, permission) {
   const option = {};
-  console.log(permission);
+
   Object.keys(options).forEach((key) => {
     if (permission.includes(key)) option[key] = options[key];
   });
@@ -133,7 +134,6 @@ const updateMe = catchAsync(async (req, res, next) => {
 
   const options = OptionSort(option, optionPermission);
 
-  console.log(options);
   const user = await User.updateOne({ _id: id }, options, {
     new: true,
     runValidators: true,
@@ -146,7 +146,7 @@ const updateMe = catchAsync(async (req, res, next) => {
 });
 
 const deleteUser = catchAsync(async (req, res, next) => {
-  console.log(req.user);
+  logger.debug(JSON.stringify(req.user));
   const deleteData = await User.findByIdAndUpdate(
     req.user._id,
     {
@@ -164,8 +164,6 @@ const deleteUser = catchAsync(async (req, res, next) => {
 });
 const role = (roles) => {
   return catchAsync(async (req, res, next) => {
-    console.log(req.user);
-    console.log(roles.includes("admin"));
     if (!roles.includes(req.user.role)) {
       return next(new AppError("Siz bu huquqga ega emassiz", 401));
     }
@@ -175,7 +173,7 @@ const role = (roles) => {
 
 const isSignin = catchAsync(async (req, res, next) => {
   let token;
-  console.log(req.cookies);
+
   if (req.cookies.jwt) {
     token = req.cookies.jwt;
   }
@@ -186,7 +184,6 @@ const isSignin = catchAsync(async (req, res, next) => {
   // tokenni tekshirish kerak
   const id = await promisify(jwt.verify)(token, process.env.SECRET);
   if (!id) {
-    console.log("sana");
     return next();
   }
   // user bazada bor yo'qligini tekshirib olish
@@ -200,7 +197,6 @@ const isSignin = catchAsync(async (req, res, next) => {
   return next();
 });
 const logout = (req, res, next) => {
-  console.log("logotga kirdi");
   res.cookie("jwt", "logout", {
     httpOnly: true,
   });
@@ -213,11 +209,9 @@ const logout = (req, res, next) => {
 const me = catchAsync(async (req, res, next) => {
   const user = {
     name: req.user.name,
-    lastname: req.user.lastname,
-    balance: req.user.balance,
-    cource: req.user.cource,
+    surname: req.user.surname,
     email: req.user.email,
-    role: req.user.role,
+    photo: req.user.photo,
   };
   res.status(200).json({
     user,

@@ -1,10 +1,13 @@
 const dotenv = require("dotenv");
 dotenv.config();
-process.on("uncaughtException", (err) => {
-  console.log(`Name ${err.name}   Message : ${err.message}`);
-  process.exit(1);
-});
+console.log("salom");
+const logger = require("./utility/logger");
+// process.on("uncaughtException", (err) => {
+//   logger.error(`Name ${err.name}   Message : ${err.message}`);
+//   process.exit(1);
+// });
 const app = require("./middlewares/app");
+console.log(app);
 const connection = require("./model/connection");
 require("./redis/connection");
 const port = process.env.PORT || 8000;
@@ -13,10 +16,10 @@ const dbPass = process.env.DB_PASS;
 dbUrl = dbUrl.replace("<password>", dbPass);
 connection(dbUrl);
 let server = app.listen(port, () => {
-  console.log(`Server is listening on port ${port}`);
+  logger.debug(`Server is listening on port ${port}`);
 });
 process.on("unhandledRejection", (err) => {
-  console.log(`Name ${err.name}   Message : ${err.message}`);
+  logger.error(`Name ${err.name}   Message : ${err.message}`);
   process.exit(1);
 });
 // console.log(server);

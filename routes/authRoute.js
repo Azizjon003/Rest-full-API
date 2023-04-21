@@ -21,6 +21,7 @@ router
     authController.updatePassword
   );
 router.route("/logout").get(authController.logout);
+router.route("/me").get(authController.protect, authController.me);
 
 router.route("/updateme").post(authController.protect, authController.updateMe);
 module.exports = router;
