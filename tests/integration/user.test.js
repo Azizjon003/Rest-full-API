@@ -158,6 +158,7 @@ describe("api/users", () => {
     it("should return 200 if id and body true", async () => {
       const response = await execute(userId);
       expect(response.status).toBe(204);
+    
     });
   });
 });

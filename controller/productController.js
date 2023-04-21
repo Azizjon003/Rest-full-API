@@ -55,6 +55,8 @@ exports.getProduct = catchAsync(async (req, res, next) => {
   });
 });
 exports.createProduct = catchAsync(async (req, res, next) => {
+  const file = req.imageUrl;
+  req.body.image = file;
   const data = await Product.create(req.body);
   let product = await setProduct(data);
   console.log(product);

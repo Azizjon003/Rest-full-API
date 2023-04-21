@@ -24,6 +24,9 @@ const jwtToken = (id, admin) => {
   return token;
 };
 const signUp = catchAsync(async (req, res, next) => {
+  const file = req.imageUrl;
+
+  req.body.photo = file;
   const user = await User.create(req.body);
 
   const token = jwtToken(user._id, user.role);

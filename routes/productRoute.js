@@ -10,10 +10,17 @@ const {
 const { validate } = require("../controller/validationUser");
 const authController = require("../controller/authController");
 const { productSchema } = require("../validation/product");
+const { upload } = require("../controller/uploadController");
 router
   .route("/")
   .get(getAllProducts)
-  .post(authController.protect, validate(productSchema), createProduct);
+  .post(
+    authController.protect,
+    authController.role("admin"),
+    upload,
+    validate(productSchema),
+    createProduct
+  );
 router
   .route("/:id")
   .get(getProduct)

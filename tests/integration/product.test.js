@@ -89,7 +89,6 @@ describe("/api/products", () => {
       salePrice: 5,
       description: "product3 description jfksjfnsdnfsndf sdkfnsdkj",
       category: "category3",
-      image: "image3",
       expire: "2021-01-01",
     };
 

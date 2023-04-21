@@ -7,9 +7,12 @@ const {
   updatePasswordJoi,
   userCreateJoi,
 } = require("../validation/user");
+const { upload } = require("../controller/uploadController");
 
 router.route("/login").post(validate(loginJoi), authController.login);
-router.route("/signup").post(validate(singUpJoi), authController.signUp);
+router
+  .route("/signup")
+  .post(upload, validate(singUpJoi), authController.signUp);
 router
   .route("/updatepassword")
   .post(
