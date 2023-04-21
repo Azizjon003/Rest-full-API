@@ -6,6 +6,7 @@ const AppError = require("../utility/AppError");
 const authRouter = require("../routes/authRoute");
 const userRoute = require("../routes/userRoute");
 const productRoute = require("../routes/productRoute");
+const CartRoute = require("../routes/cartRoute");
 const ErrorHandler = require("../controller/errorHandler");
 
 const { swaggerUI, swaggerDocument } = require("../controller/doc");
@@ -20,6 +21,8 @@ app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/users", userRoute);
 
 app.use("/api/v1/products", productRoute);
+
+app.use("/api/v1/cart", CartRoute);
 app.use("/api-doc", swaggerUI.serve, swaggerUI.setup(swaggerDocument));
 
 app.get("/", async (req, res, next) => {
