@@ -1,7 +1,7 @@
 const User = require("../model/user");
 const AppError = require("../utility/AppError");
 const catchAsync = require("../utility/catchAsync");
-const logegr = require("../utility/logger");
+const logger = require("../utility/logger");
 const { promisify } = require("util");
 const jwt = require("jsonwebtoken");
 

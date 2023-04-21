@@ -1,7 +1,7 @@
 const express = require("express");
 const app = express();
 const path = require("path");
-
+const cookieParser = require("cookie-parser");
 const AppError = require("../utility/AppError");
 const authRouter = require("../routes/authRoute");
 const userRoute = require("../routes/userRoute");
@@ -12,6 +12,7 @@ const { swaggerUI, swaggerDocument } = require("../controller/doc");
 const morgan = require("morgan");
 
 app.use(express.json());
+app.use(cookieParser());
 app.use(morgan("dev"));
 app.use(express.static(path.join(__dirname, "../public")));
 app.use("/api/v1/auth", authRouter);

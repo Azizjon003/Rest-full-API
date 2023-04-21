@@ -7,14 +7,20 @@ const CartSchema = new mongoose.Schema(
         count: Number,
       },
     ],
-    cost: Number,
+    cost: {
+      type: Number,
+      required: [true, "Please provide cost"],
+    },
     condition: {
       type: String,
       enum: ["false", "middle", "true"],
+      default: "false",
+      required: [true, "Please provide condition"],
     },
     userId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "users",
+      required: [true, "Please provide user id"],
     },
   },
   {
