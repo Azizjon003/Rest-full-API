@@ -13,7 +13,7 @@ schemes:
   - https
   - http
 paths:
-  /users:
+  /api/v1/users:
     get:
       summary: Get a list of users
       description: Retrieve a list of users from the database.
@@ -30,21 +30,56 @@ definitions:
   User:
     type: object
     properties:
-      id:
-        type: integer
-        format: int64
-      username:
+      name:
         type: string
+        minLength: 5
+
+      surname:
+        type: string
+        minLength: 5
+
       email:
         type: string
-      address:
-        type: object
-        properties:
-          street:
-            type: string
-          city:
-            type: string
-          state:
-            type: string
-          zip:
-            type: string
+        format: email
+      photo:
+        type: string
+        default: "photo.jpg"
+      password:
+        type: string
+        minLength: 8
+      passwordConfirm:
+        type: string
+      role:
+        type: string
+        enum: ["admin", "user"]
+        default: "user"
+      jins:
+        type: string
+        enum: ["erkak", "ayol"]
+      active:
+        type: boolean
+        default: true
+  Product:
+    type: object
+    properties:
+      name:
+        type: string
+        minLength: 5
+
+      price:
+        type: number
+        minimum: 0
+      description:
+        type: string
+        minLength: 5
+
+      photo:
+        type: string
+        default: "photo.jpg"
+      category:
+        type: string
+        enum: ["food", "drink"]
+        default: "food"
+      active:
+        type: boolean
+        default: true  
