@@ -48,7 +48,6 @@ describe("/api/products", () => {
   describe("GET /", () => {
     it("should return all products", async () => {
       const res = await request(server).get("/api/v1/products");
-      // console.log(res.body);
       expect(res.status).toBe(200);
       expect(res.body.results).toBe(3);
       expect(

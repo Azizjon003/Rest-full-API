@@ -14,8 +14,11 @@ components:
     bearerAuth: # arbitrary name for the security scheme
       type: http
       scheme: bearer
-      bearerFormat: JWT # optional, arbitrary value for documentation purposes
-# 2) Apply the security globally to all operations
+      bearerFormat: JWT
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: cart
 security:
   - bearerAuth: []
 
@@ -23,7 +26,7 @@ paths:
   /api/v1/users:
     get:
       tags:
-        - users
+        - Users
       security:
         - bearerAuth: []
       summary: Hamma foydalanuvchilar ro'yhati.
@@ -38,7 +41,7 @@ paths:
   /api/v1/users/{id}:
     get:
       tags:
-        - users
+        - Users
       security:
         - bearerAuth: []
       summary: Foydalanuvchi haqida ma'lumot.
@@ -60,7 +63,7 @@ paths:
   /api/v1/users/:
     post:
       tags:
-        - users
+        - Users
       security:
         - bearerAuth: []
       summary: Foydalanuvchi yaratish.
@@ -94,7 +97,7 @@ paths:
   /api/v1/users/{id}/:
     patch:
       tags:
-        - users
+        - Users
       security:
         - bearerAuth: []
       summary: Foydalanuvchi haqida ma'lumot.
@@ -133,7 +136,7 @@ paths:
   /api/v1/users/{idcha}/:
     delete:
       tags:
-        - users
+        - Users
       security:
         - bearerAuth: []
       summary: Foydalanuvchi haqida ma'lumot.
@@ -224,6 +227,360 @@ paths:
       responses:
         "200": # status code
           description: A JSON array of usernames
+          content:
+            application/json:
+              schema:
+                type: object
+  /api/v1/products/:
+    post:
+      tags:
+        - Products
+      security:
+        - bearerAuth: []
+      summary: Mahsulot yaratish.
+      description: Mahsulot yaratish faqat admin uchun.
+      requestBody:
+        description: Mahsulot haqida ma'lumot.
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                description:
+                  type: string
+                price:
+                  type: string
+                category:
+                  type: string
+                expire:
+                  type: string
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                description:
+                  type: string
+                price:
+                  type: number
+                category:
+                  type: string
+                salePrice:
+                  type: number
+                expire:
+                  type: string
+                image:
+                  type: string
+                  format: binary
+      responses:
+        "200": # status code
+          description: Mahsulot qaytadi.
+          content:
+            application/json:
+              schema:
+                type: object
+  /api/v1/products/{idcha}/:
+    delete:
+      tags:
+        - Products
+      security:
+        - bearerAuth: []
+      summary: Mahsulot haqida ma'lumot.
+      description: Mahsulot haqida ma'lumotni o'chirish faqat admin uchun.
+      parameters:
+        - name: idcha
+          in: path
+          description: Mahsulot ID si.
+          required: true
+          schema:
+            type: string
+      responses:
+        "200": # status code
+          description: A JSON array of usernames
+          content:
+            application/json:
+              schema:
+                type: object
+  /api/v1/auth/signup:
+    post:
+      tags:
+        - Auth
+      summary: Ro'yxatdan o'tish.
+      description: Ro'yxatdan o'tish uchun ma'lumotlarni yuborish.
+      requestBody:
+        description: Ro'yxatdan o'tish uchun ma'lumotlar.
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                surname:
+                  type: string
+                email:
+                  type: string
+                password:
+                  type: string
+                passwordConfirm:
+                  type: string
+                jins:
+                  type: string
+                  enum:
+                    - erkak
+                    - ayol
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                surname:
+                  type: string
+                email:
+                  type: string
+                password:
+                  type: string
+                passwordConfirm:
+                  type: string
+                jins:
+                  type: string
+                  enum:
+                    - erkak
+                    - ayol
+                image:
+                  type: string
+                  format: binary
+      responses:
+        "200": # status code
+          description: A JSON array of usernames
+          content:
+            application/json:
+              schema:
+                type: object
+  /api/v1/auth/login:
+    post:
+      tags:
+        - Auth
+      summary: Kirish.
+      description: Kirish uchun ma'lumotlarni yuborish.
+      requestBody:
+        description: Kirish uchun ma'lumotlar.
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                password:
+                  type: string
+      responses:
+        "200": # status code
+          description: A JSON array of usernames
+          content:
+            application/json:
+              schema:
+                type: object
+
+  /api/v1/auth/updatepassword:
+    post:
+      tags:
+        - Auth
+      security:
+        - bearerAuth: []
+      summary: Parolni o'zgartirish.
+      description: Parolni o'zgartirish uchun ma'lumotlarni yuborish.
+      requestBody:
+        description: Parolni o'zgartirish uchun ma'lumotlar.
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                currentPassword:
+                  type: string
+                password:
+                  type: string
+                passwordConfirm:
+                  type: string
+      responses:
+        "200": # status code
+          description: A JSON array of usernames
+          content:
+            application/json:
+              schema:
+                type: object
+
+  /api/v1/auth/logout:
+    get:
+      tags:
+        - Auth
+      security:
+        - bearerAuth: []
+      summary: Chiqish.
+      description: Chiqish uchun ma'lumotlarni yuborish.
+      responses:
+        "200": # status code
+          description: A JSON array of usernames
+          content:
+            application/json:
+              schema:
+                type: object
+  /api/v1/auth/me:
+    get:
+      tags:
+        - Auth
+      security:
+        - bearerAuth: []
+      summary: Ma'lumot.
+      description: Ma'lumot olish uchun ma'lumotlarni yuborish.
+      responses:
+        "200": # status code
+          description: A JSON array of usernames
+          content:
+            application/json:
+              schema:
+                type: object
+  /api/v1/auth/updateme:
+    post:
+      tags:
+        - Auth
+      security:
+        - bearerAuth: []
+      summary: Ma'lumot.
+      description: Ma'lumot olish uchun ma'lumotlarni yuborish.
+      requestBody:
+        description: Ma'lumot olish uchun ma'lumotlar.
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                surname:
+                  type: string
+                email:
+                  type: string
+                jins:
+                  type: string
+                  enum:
+                    - erkak
+                    - ayol
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                surname:
+                  type: string
+                email:
+                  type: string
+                jins:
+                  type: string
+                  enum:
+                    - erkak
+                    - ayol
+                image:
+                  type: string
+                  format: binary
+      responses:
+        "200": # status code
+          description: A JSON array of usernames
+          content:
+            application/json:
+              schema:
+                type: object
+
+  /api/v1/cart/getcart:
+    get:
+      tags:
+        - Cart
+      security:
+        - bearerAuth: []
+      summary: Savat.
+      description: Savatni olish uchun ma'lumotlarni yuborish.
+      responses:
+        "200": # status code
+          description: A JSON array of usernames
+          content:
+            application/json:
+              schema:
+                type: object
+  /api/v1/cart/addtocart:
+    post:
+      tags:
+        - Cart
+      security:
+        - bearerAuth: []
+      summary: Savatga qo'shish.
+      description: Savatga qo'shish uchun ma'lumotlarni yuborish.
+      requestBody:
+        description: Savatga qo'shish uchun ma'lumotlar.
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                products:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      productId:
+                        type: string
+                      count:
+                        type: number
+      responses:
+        "200": # status code
+          description: A JSON array of usernames
+          content:
+            application/json:
+              schema:
+                type: object
+
+  /api/v1/cart/paymentcart:
+    get:
+      tags:
+        - Cart
+      security:
+        - bearerAuth: []
+      summary: Savatni to'lash.
+      description: Savatni to'lash uchun ma'lumotlarni yuborish.
+      responses:
+        "200": # status code
+          description: A JSON array of usernames
+          content:
+            application/json:
+              schema:
+                type: object
+  /api/v1/cart/deletecart:
+    get:
+      tags:
+        - Cart
+      security:
+        - bearerAuth: []
+      summary: Savatni to'lash.
+      description: Savatni to'lash uchun ma'lumotlarni yuborish.
+      responses:
+        "200": # status code
+          description: A JSON array of usernames
+          headers:
+            set-cookie:
+              schema:
+                type: string
+                description: A cookie
           content:
             application/json:
               schema:

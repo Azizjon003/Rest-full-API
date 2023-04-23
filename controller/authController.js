@@ -127,13 +127,19 @@ const protect = catchAsync(async (req, res, next) => {
 });
 const updateMe = catchAsync(async (req, res, next) => {
   const id = req.user._id;
-  const optionPermission = ["name", "surname"];
+  console.log(req.body);
+  const optionPermission = ["name", "surname", "email", "photo", "jins"];
+  const file = req.imageUrl;
+  console.log(file);
   let option = {};
   option.name = req.body.name || req.user.name;
   option.surname = req.body.surname || req.user.surname;
+  option.email = req.body.email || req.user.email;
+  option.photo = file || req.user.photo;
+  option.jins = req.body.jins || req.user.jins;
 
   const options = OptionSort(option, optionPermission);
-
+  console.log(options);
   const user = await User.updateOne({ _id: id }, options, {
     new: true,
     runValidators: true,

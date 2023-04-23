@@ -13,15 +13,16 @@ router.route("/login").post(validate(loginJoi), authController.login);
 router
   .route("/signup")
   .post(upload, validate(singUpJoi), authController.signUp);
-router
-  .route("/updatepassword")
-  .post(
-    authController.protect,
-    validate(updatePasswordJoi),
-    authController.updatePassword
-  );
-router.route("/logout").get(authController.logout);
+router.route("/updatepassword").post(
+  authController.protect,
+  validate(updatePasswordJoi),
+
+  authController.updatePassword
+);
+router.route("/logout").get(authController.protect, authController.logout);
 router.route("/me").get(authController.protect, authController.me);
 
-router.route("/updateme").post(authController.protect, authController.updateMe);
+router
+  .route("/updateme")
+  .post(authController.protect, upload, authController.updateMe);
 module.exports = router;

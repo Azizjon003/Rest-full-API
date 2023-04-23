@@ -59,7 +59,7 @@ exports.createProduct = catchAsync(async (req, res, next) => {
   req.body.image = file;
   const data = await Product.create(req.body);
   let product = await setProduct(data);
-  console.log(product);
+
   if (!data) {
     return next(new AppError("No data found", 404));
   }
@@ -74,8 +74,9 @@ exports.updateProduct = catchAsync(async (req, res, next) => {
   if (!id) {
     return next(new AppError("Please provide id", 400));
   }
-
-  const data = await Product.updateOne({ _id: id }, req.body, {
+  const file = req.imageUrl;
+  req.body.image = file;
+  await Product.updateOne({ _id: id }, req.body, {
     new: true,
     runValidators: true,
   });
