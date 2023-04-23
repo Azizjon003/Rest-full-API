@@ -8,10 +8,17 @@ const userRoute = require("../routes/userRoute");
 const productRoute = require("../routes/productRoute");
 const CartRoute = require("../routes/cartRoute");
 const ErrorHandler = require("../controller/errorHandler");
+const cors = require("cors");
 
 const { swaggerUI, swaggerDocument } = require("../controller/doc");
 const morgan = require("morgan");
 
+app.use(
+  cors({
+    origin: "*",
+    methods: ["GET", "POST", "DELETE", "UPDATE", "PUT", "PATCH"],
+  })
+);
 app.use(express.json());
 app.use(cookieParser());
 app.use(morgan("dev"));
