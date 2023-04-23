@@ -71,11 +71,13 @@ exports.createProduct = catchAsync(async (req, res, next) => {
 });
 exports.updateProduct = catchAsync(async (req, res, next) => {
   const id = req.params.id;
-  if (!id) {
-    return next(new AppError("Please provide id", 400));
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    return next(new AppError("Invalid Id", 400));
   }
+  const data = await Product.findOne({ _id: id });
   const file = req.imageUrl;
-  req.body.image = file;
+  req.body.image = file || data.image;
+  console.log(req.body);
   await Product.updateOne({ _id: id }, req.body, {
     new: true,
     runValidators: true,

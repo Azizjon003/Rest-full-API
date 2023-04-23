@@ -24,7 +24,12 @@ router
 router
   .route("/:id")
   .get(getProduct)
-  .delete(authController.protect, deleteProduct)
-  .patch(authController.protect, upload, updateProduct);
+  .delete(authController.protect, authController.role("admin"), deleteProduct)
+  .patch(
+    authController.protect,
+    authController.role("admin"),
+    upload,
+    updateProduct
+  );
 
 module.exports = router;
