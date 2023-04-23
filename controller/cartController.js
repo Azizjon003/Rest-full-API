@@ -10,6 +10,7 @@ const IsProduct = async (id) => {
   const product = await Product.findById(id);
   return product;
 };
+const _ = require("lodash");
 const saveTokenCookie = (res, token, req) => {
   // shu cookieni ishlashini sorimiz
   res.cookie("cart", token, {
@@ -24,6 +25,7 @@ const cookieCreater = (id) => {
   });
   return token;
 };
+
 exports.getCart = catchAsync(async (req, res, next) => {
   const cart = await Cart.findOne({ userId: req.user._id, condition: "false" });
 

@@ -77,7 +77,7 @@ exports.updateProduct = catchAsync(async (req, res, next) => {
   const data = await Product.findOne({ _id: id });
   const file = req.imageUrl;
   req.body.image = file || data.image;
-  console.log(req.body);
+
   await Product.updateOne({ _id: id }, req.body, {
     new: true,
     runValidators: true,

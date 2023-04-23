@@ -6,7 +6,7 @@ info:
 servers:
   - url: http://localhost:8080
     description: Bu url localhostdagi server uchun
-  - url: http://staging-api.example.com
+  - url: http://18-181-217-30:8080
     description: Bu url esa staging server uchun
 
 components:
