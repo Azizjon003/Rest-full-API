@@ -3,9 +3,8 @@ dotenv.config();
 console.log("salom");
 const logger = require("./utility/logger");
 process.on("uncaughtException", (err) => {
-  console.log(err);
+  console.log(err.message);
   logger.error(`Name ${err.name}   Message : ${err.message}`);
-  process.exit(1);
 });
 const app = require("./middlewares/app");
 
@@ -21,11 +20,12 @@ dbUrl = dbUrl.replace("<password>", dbPass);
 connection(dbUrl);
 
 let server = app.listen(port, () => {
+  console.log(`Server is listening on port ${port}`);
   logger.debug(`Server is listening on port ${port}`);
 });
 process.on("unhandledRejection", (err) => {
+  console.log(err.message);
   logger.error(`Name ${err.name}   Message : ${err.message}`);
-  process.exit(1);
 });
 // console.log(server);
 
