@@ -18,7 +18,12 @@ const {
 router
   .route("/")
   .get(authController.protect, authController.role("admin"), getAllUsers)
-  .post(validate(userCreateJoi), addUser);
+  .post(
+    validate(userCreateJoi),
+    authController.protect,
+    authController.role("admin"),
+    addUser
+  );
 router
   .route("/:id")
   .get(authController.protect, authController.role("admin"), getUser)

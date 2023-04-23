@@ -3,6 +3,7 @@ dotenv.config();
 console.log("salom");
 const logger = require("./utility/logger");
 process.on("uncaughtException", (err) => {
+  console.log(err);
   logger.error(`Name ${err.name}   Message : ${err.message}`);
   process.exit(1);
 });
