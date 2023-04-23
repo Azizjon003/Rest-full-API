@@ -358,3 +358,5 @@
 {"level":"debug","message":"Server is listening on port 8080","service":"user-service"}
 {"level":"debug","message":"Server is listening on port 8080","service":"user-service"}
 {"level":"debug","message":"Server is listening on port 8080","service":"user-service"}
+{"level":"debug","message":"Server is listening on port 8080","service":"user-service"}
+{"level":"error","message":"{\"status\":\"error\",\"statusCode\":404,\"message\":\"No data found\",\"infoError\":\"Error: No data found\\n    at /home/azizjon/Desktop/New Folder/Crud/controller/productController.js:24:17\\n    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)\\n    at async /home/azizjon/Desktop/New Folder/Crud/utility/catchAsync.js:5:5\"}","service":"user-service"}
